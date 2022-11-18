@@ -18,13 +18,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(path="roles")
-    public List<Role> getRoles(){return userService.getRoleList();}
+    @GetMapping(path="/roles")
+    public List<Role> getRoles(){
+        return userService.getRoleList();
+    }
 
-    @PostMapping(path="saverole")
-    public Role saveRole(@RequestBody Role role){return userService.saveRole(role);}
+    @PostMapping(path="/saverole")
+    public String saveRole(@RequestBody Role role){return userService.saveRole(role);}
 
-    @PostMapping(path="deleterole")
+    @PostMapping(path="/deleterole")
     public String deleteRole(@RequestBody Role role){return userService.deleteRole(role);}
 
     @GetMapping
@@ -32,21 +34,21 @@ public class UserController {
         return userService.getList();
     }
 
-    @PostMapping(path="save")
+    @PostMapping(path="/save")
     public User saveUser(@RequestBody UserRoleDTO userRoleDTO){
         User user = new User(userRoleDTO.getEmail(), userRoleDTO.getPassword(),
                 userService.findRole(userRoleDTO.getRole_code()));
         return userService.saveUser(user);
     }
 
-    @PostMapping(path="delete")
+    @PostMapping(path="/delete")
     public String deleteUser(@RequestBody UserRoleDTO userRoleDTO){
         User user = new User(userRoleDTO.getEmail(), userRoleDTO.getPassword(),
                 userService.findRole(userRoleDTO.getRole_code()));
         return userService.deleteUser(user);
     }
 
-    @PostMapping(path="choose")
+    @PostMapping(path="/choose")
     public User chooseUser(@RequestBody UserDTO userDTO){
        return userService.chooseUser(userDTO.getEmail(),userDTO.getPassword());
     }

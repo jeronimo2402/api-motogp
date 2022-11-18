@@ -29,7 +29,7 @@ public class MotorcycleService {
         return "motorcycle deleted";
     }
 
-    public Motorcycle getMotorcycle(String numMotorcycle){
+    public Motorcycle getMotorcycle(long numMotorcycle){
         return motorcycleRepository.findById(numMotorcycle).get();
     }
 

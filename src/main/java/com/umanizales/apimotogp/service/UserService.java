@@ -22,9 +22,11 @@ public class UserService {
     private UserRepository userRepository;
     private User currentUser;
 
+    /*
     public UserService(){
         this.currentUser = null;
     }
+     */
     public List<User> getList(){
         return userRepository.findAll();
     }
@@ -36,8 +38,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Role saveRole(Role role){
-        return roleRepository.save(role);
+    public String saveRole(Role role){
+        roleRepository.save(role);
+        return "Role saved";
     }
 
     public String deleteUser(User user){
@@ -50,7 +53,7 @@ public class UserService {
         return "Role deleted";
     }
 
-    public Role findRole(String code){
+    public Role findRole(long code){
         for (Role role:getRoleList()){
             if (Objects.equals(role.getCode(),code)){
                 return role;

@@ -36,7 +36,7 @@ public class MotorcycleController {
 
     @PostMapping(path="/delete")
     public String deleteMotorcycle(Motorcycle motorcycle){
-        if(Objects.equals(userService.getCurrentUser().getRole().getCode(),"1001")) {
+        if(Objects.equals(userService.getCurrentUser().getRole().getCode(),1)) {
             motorcycleService.deleteMotorcycle(motorcycle);
             return "Motorcycle deleted";
         }
@@ -44,8 +44,8 @@ public class MotorcycleController {
     }
 
     @PostMapping(path="/search")
-    public Motorcycle findMotorcycle(String numMotorcycle) {
-        if (Objects.equals(userService.getCurrentUser().getRole().getCode(), "1001")) {
+    public Motorcycle findMotorcycle(long numMotorcycle) {
+        if (Objects.equals(userService.getCurrentUser().getRole().getCode(), 1)) {
             return motorcycleService.getMotorcycle(numMotorcycle);
         }
         return null;

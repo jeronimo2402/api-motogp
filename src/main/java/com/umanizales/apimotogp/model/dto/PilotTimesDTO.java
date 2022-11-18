@@ -6,7 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PilotTimesDTO {
-    private String numMotorcycle;
+    private long code;
+    private long numMotorcycle;
     private float time;
-    private String classification_code;
+    private long classification_code;
 }

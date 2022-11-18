@@ -8,5 +8,5 @@ import lombok.Data;
 public class UserRoleDTO {
     private String email;
     private String password;
-    private String role_code;
+    private long role_code;
 }

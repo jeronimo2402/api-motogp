@@ -3,7 +3,8 @@ package com.umanizales.apimotogp.controller;
 
 import com.umanizales.apimotogp.model.Classification;
 import com.umanizales.apimotogp.model.Motorcycle;
-import com.umanizales.apimotogp.model.dto.ClassificationDTO;
+import com.umanizales.apimotogp.model.ClassificationTimes;
+import com.umanizales.apimotogp.model.dto.PilotTimesDTO;
 import com.umanizales.apimotogp.model.dto.PilotsDTO;
 import com.umanizales.apimotogp.service.RaceService;
 import com.umanizales.apimotogp.service.UserService;
@@ -24,22 +25,28 @@ public class RaceController {
 
     @PostMapping(path="/classification")
     public String saveClassification(@RequestBody Classification classification){
-        if(Objects.equals(userService.getCurrentUser().getRole().getCode(),"1001")) {
+        if(Objects.equals(userService.getCurrentUser().getRole().getCode(),1)) {
             raceService.saveClassification(classification);
             return "Classification saved";
         }
         return "User must be administrator";
     }
     @PostMapping(path="/times")
-    public String pilotTime(@RequestBody ClassificationDTO classificationDTO){
-        if(Objects.equals(userService.getCurrentUser().getRole().getCode(),"1001")) {
-            return raceService.saveTime(classificationDTO);
+    public String pilotTime(@RequestBody PilotTimesDTO pilotTimesDTO){
+        if(userService.getCurrentUser().getRole().getCode()==1){
+            if(raceService.getClassification().isState()){
+                ClassificationTimes classificationTimes = new ClassificationTimes(raceService.hashCode(),
+                        raceService.getMotorcycleService().getMotorcycle(pilotTimesDTO.getNumMotorcycle()),
+                        pilotTimesDTO.getTime(),raceService.findClassification(pilotTimesDTO.getClassification_code()));
+                return raceService.saveTime(classificationTimes);
+            }
+            return "classification doesn't exists";
         }
         return "User must be administrator";
     }
     @PostMapping(path="/state")
     public String setState(@RequestBody String state){
-        if(Objects.equals(userService.getCurrentUser().getRole().getCode(),"1001")) {
+        if(Objects.equals(userService.getCurrentUser().getRole().getCode(),1)) {
             if (raceService.setRaceState(state)) {
                 return "state actualized";
             } else {

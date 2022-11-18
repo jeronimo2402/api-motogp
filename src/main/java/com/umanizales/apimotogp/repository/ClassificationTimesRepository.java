@@ -1,9 +1,9 @@
 package com.umanizales.apimotogp.repository;
 
-import com.umanizales.apimotogp.model.dto.ClassificationDTO;
+import com.umanizales.apimotogp.model.ClassificationTimes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClassificationDTORepository extends JpaRepository<ClassificationDTO,String> {
+public interface ClassificationTimesRepository extends JpaRepository<ClassificationTimes,Long> {
 }

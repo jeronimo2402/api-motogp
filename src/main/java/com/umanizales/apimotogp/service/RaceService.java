@@ -4,15 +4,14 @@ package com.umanizales.apimotogp.service;
 import com.umanizales.apimotogp.model.Classification;
 import com.umanizales.apimotogp.model.Motorcycle;
 import com.umanizales.apimotogp.model.Race;
-import com.umanizales.apimotogp.model.dto.ClassificationDTO;
+import com.umanizales.apimotogp.model.ClassificationTimes;
 import com.umanizales.apimotogp.model.dto.PilotsDTO;
-import com.umanizales.apimotogp.repository.ClassificationDTORepository;
+import com.umanizales.apimotogp.repository.ClassificationTimesRepository;
 import com.umanizales.apimotogp.repository.ClassificationRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,18 +22,16 @@ public class RaceService {
     @Autowired
     private ClassificationRepository classificationRepository;
     @Autowired
-    private ClassificationDTORepository classificationDTORepository;
+    private ClassificationTimesRepository classificationTimesRepository;
     @Autowired
     private MotorcycleService motorcycleService;
     private Classification classification;
     private Race race;
     private List<Classification> classifications;
 
-    public RaceService(){
-        classifications = classificationRepository.findAll();
-    }
+
     public void saveClassification(Classification classification){
-        for (Classification classification1:classifications){
+        for (Classification classification1:classificationRepository.findAll()){
             classification1.setState(false);
             classificationRepository.save(classification1);
         }
@@ -42,22 +39,27 @@ public class RaceService {
         this.classification = classification;
         classificationRepository.save(classification);
     }
-    public String saveTime(ClassificationDTO classificationDTO){
+
+    public Classification findClassification(long code){
+        return classificationRepository.findById(code).get();
+    }
+
+    public String saveTime(ClassificationTimes classificationTimes){
         race.setState("in process");
         if (classification.getGrill()==null) {
-            classification.getGrill().add(classificationDTO);
-            classificationDTORepository.save(classificationDTO);
+            classification.getGrill().add(classificationTimes);
+            classificationTimesRepository.save(classificationTimes);
         }
         else {
-            List<ClassificationDTO> list = new ArrayList<>();
-            for(ClassificationDTO classificationDTO1:classification.getGrill()) {
-                if(classificationDTO.getTime()<classificationDTO1.getTime()){
-                    if(!list.contains(classificationDTO)){
-                        list.add(classificationDTO);
-                        classificationDTORepository.save(classificationDTO);
+            List<ClassificationTimes> list = new ArrayList<>();
+            for(ClassificationTimes classificationTimes1 :classification.getGrill()) {
+                if(classificationTimes.getTime()< classificationTimes1.getTime()){
+                    if(!list.contains(classificationTimes)){
+                        list.add(classificationTimes);
+                        classificationTimesRepository.save(classificationTimes);
                     }
                 }
-                list.add(classificationDTO1);
+                list.add(classificationTimes1);
             }
             classification.setGrill(list);
         }
@@ -75,11 +77,11 @@ public class RaceService {
         return false;
     }
 
-    @PostConstruct
+
     public void startRace(){
-        for(ClassificationDTO classificationDTO:classification.getGrill())
+        for(ClassificationTimes classificationTimes :classification.getGrill())
         {
-            race.getListDE().addEnd(classificationDTO.getMotorcycle());
+            race.getListDE().addEnd(classificationTimes.getMotorcycle());
         }
         race.setState("initialized");
     }
@@ -124,6 +126,7 @@ public class RaceService {
     }
 
     public List<Motorcycle> endRace(){
+        classification.setState(false);
         race.setState("closed");
         return race.getListDE().getList();
     }
